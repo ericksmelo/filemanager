@@ -40,8 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
                 continue;
             }
             $original  = $uploads['name'][$i];
-            $safe      = preg_replace('/[^\w.\-]/', '_', basename($original));
-            $safe      = ltrim($safe, '.');
+            $safe      = basename($original);
             $dest      = UPLOAD_DIR . $safe;
             // Avoid overwriting: append suffix if needed
             if (file_exists($dest)) {

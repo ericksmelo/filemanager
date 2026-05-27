@@ -16,7 +16,18 @@ if (!file_exists($filepath) || !is_file($filepath)) {
     exit('Arquivo não encontrado.');
 }
 
-$mime = mime_content_type($filepath) ?: 'application/octet-stream';
+$ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+$extMime = [
+    'apk'  => 'application/vnd.android.package-archive',
+    'ipa'  => 'application/octet-stream',
+    'exe'  => 'application/octet-stream',
+    'dmg'  => 'application/octet-stream',
+    'zip'  => 'application/zip',
+    'pdf'  => 'application/pdf',
+    'mp4'  => 'video/mp4',
+    'mp3'  => 'audio/mpeg',
+];
+$mime = $extMime[$ext] ?? mime_content_type($filepath) ?: 'application/octet-stream';
 
 header('Content-Type: ' . $mime);
 header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
