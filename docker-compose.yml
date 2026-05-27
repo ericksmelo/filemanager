@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - uploads:/var/www/html/uploads
+    env_file:
+      - .env
+
+volumes:
+  uploads:
