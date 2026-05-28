@@ -29,10 +29,23 @@ $extMime = [
 ];
 $mime = $extMime[$ext] ?? mime_content_type($filepath) ?: 'application/octet-stream';
 
+// Disable output compression — gzip/deflate corrupts binary files (APK, ZIP, etc.)
+@ini_set('zlib.output_compression', 'Off');
+@apache_setenv('no-gzip', 1);
+
+// Flush any buffered output that would prepend stray bytes to the file
+while (ob_get_level()) {
+    ob_end_clean();
+}
+
 header('Content-Type: ' . $mime);
 header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
 header('Content-Length: ' . filesize($filepath));
+header('Content-Transfer-Encoding: binary');
 header('Cache-Control: no-store');
 
-readfile($filepath);
+// Open in binary mode to avoid line-ending translation on any OS
+$fp = fopen($filepath, 'rb');
+fpassthru($fp);
+fclose($fp);
 exit;
